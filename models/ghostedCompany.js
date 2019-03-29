@@ -6,7 +6,10 @@ module.exports = function (sequelize, DataTypes) {
 
   var ghostedCompany = sequelize.define("ghostedCompany", {
     company_name: DataTypes.STRING,
-    company_address: DataTypes.STRING,
+    company_address: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     company_city: DataTypes.STRING,
     company_state: DataTypes.STRING,
     company_zipcode: DataTypes.STRING,

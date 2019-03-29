@@ -65,9 +65,6 @@ $(document).ready(function(){
   getLifetimeReport()
 });
 
-lookupButton.click(function() {
-  console.log(company)
-})
 function getLifetimeReport() {
   $.ajax({
     method: "POST",
