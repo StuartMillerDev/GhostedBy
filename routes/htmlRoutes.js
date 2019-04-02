@@ -14,7 +14,7 @@ module.exports = function (app) {
       include: [
         {
           model: db.ghostedCount,
-          attributes: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'count']],
+          attributes: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'bleh']],
           duplicating: false,
         },
       ],
@@ -112,7 +112,7 @@ module.exports = function (app) {
 
 
   // Render 404 page for any unmatched routes
-  app.get("*", function (req, res) {
-    res.render("404");
-  });
+  // app.get("*", function (req, res) {
+  //   res.render("404");
+  // });
 };
