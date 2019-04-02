@@ -9,10 +9,10 @@ var lookupButton = $("#lookup-btn");
 var div = $("#trending-report");
 
 // This wrapper initializes the modal
-$(document).ready(function(){
+$(document).ready(function () {
   $('.modal').modal({
     // Declaring a function to run before the modal opens
-    onOpenStart: function() {
+    onOpenStart: function () {
       var lookupCompany = {
         company_name: $("#lookup-company").val()
       };
@@ -21,22 +21,22 @@ $(document).ready(function(){
         url: "/api/lookup",
         data: lookupCompany
       })
-      .then(function (data) {
-        var company = data.company_name;
-        $("#companyName").append(company)
+        .then(function (data) {
+          var company = data.company_name;
+          $("#companyName").append(company)
 
-        // If there is no data for the ghosted count, the modal displays a generic message
-        if (!data.ghosted_count) {
-          $("#timesReported").append("This company has not been reported yet.")
-        
-        // If there is data on the company, the modal will display the number of times this comoany has been reported
-        } else {
-          $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
-        }
-      });
+          // If there is no data for the ghosted count, the modal displays a generic message
+          if (!data.ghosted_count) {
+            $("#timesReported").append("This company has not been reported yet.")
+
+            // If there is data on the company, the modal will display the number of times this comoany has been reported
+          } else {
+            $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
+          }
+        });
 
     },
-    onCloseEnd: function() {
+    onCloseEnd: function () {
       $("#companyName").empty();
       $("#timesReported").empty();
       $("#lookup-company").val("");
@@ -54,15 +54,16 @@ function reportCompany(company) {
       // Clear textfield
       $("#report-company").val('');
       console.log(data)
-    });
-}
+
 
       // Clear teetfield
       $("#lookup-company").val('');
       // Data is the company info
       console.log(data)
     });
-$(reportButton).on("click", function() {
+}
+
+$(reportButton).on("click", function () {
   reportCompany(companyResult);
   $("#report-company").val("");
 });
@@ -110,12 +111,26 @@ function getCompanyReportedName() {
   document.getElementById("report-company").value = '';
   document.getElementById("report-company").value = place.name;
 
+  if (!place.geometry) {
+    // User entered the name of a Place that was not suggested and
+    // pressed the Enter key, or the Place Details request failed.
+    window.alert("No details available for input: '" + place.name + "'");
+    return;
+  }
+
   fillInAddress(place)
 }
 
 function getCompanyLookupName() {
 
   var place = autocompleteLookup.getPlace();
+
+  if (!place.geometry) {
+    // User entered the name of a Place that was not suggested and
+    // pressed the Enter key, or the Place Details request failed.
+    window.alert("No details available for input: '" + place.name + "'");
+    return;
+  }
 
   document.getElementById("lookup-company").value = '';
   document.getElementById("lookup-company").value = place.name;
