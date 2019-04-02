@@ -9,6 +9,16 @@ var lookupButton = $("#lookup-btn");
 var div = $("#trending-report");
 var company = $("#lookup-company").val()
 
+
+// This wrapper initializes the modal
+$(document).ready(function () {
+  $('.modal').modal({
+    // Declaring a function to run before the modal opens
+    onOpenStart: function () {
+      var lookupCompany = {
+        company_name: $("#lookup-company").val()
+      };
+
 $(document).ready(function(){
   // Click event to capture the searched company
   lookupButton.click(function() {
@@ -22,11 +32,27 @@ $(document).ready(function(){
         $("#report-searched").hide();
       } else {
         $("#report-searched").show();
+
       $.ajax({
         method: "POST",
         url: "/api/lookup",
         data: companyResult
       })
+
+        .then(function (data) {
+          var company = data.company_name;
+          $("#companyName").append(company)
+
+          // If there is no data for the ghosted count, the modal displays a generic message
+          if (!data.ghosted_count) {
+            $("#timesReported").append("This company has not been reported yet.")
+
+            // If there is data on the company, the modal will display the number of times this comoany has been reported
+          } else {
+            $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
+          }
+        });
+
       .then(function (data) {
         console.log(data);
       
@@ -53,8 +79,9 @@ $(document).ready(function(){
       });
       }
       
+
     },
-    onCloseEnd: function() {
+    onCloseEnd: function () {
       $("#companyName").empty();
       $("#timesReported").empty();
       $("#lookup-company").val("");
@@ -122,6 +149,19 @@ function reportCompany(company) {
     .then(function (data) {
       // Clear textfield
       $("#report-company").val('');
+
+      console.log(data)
+
+
+      // Clear teetfield
+      $("#lookup-company").val('');
+      // Data is the company info
+      console.log(data)
+    });
+}
+
+$(reportButton).on("click", function () {
+
     });
 }
 
@@ -131,6 +171,7 @@ $("#30day").on("click", get30DayReport);
 $("#7day").on("click", get7DayReport);
    
 $("#report-searched").on("click", function() {
+
   reportCompany(companyResult);
   $("#report-searched").hide();
   $("#timesReported").empty();
@@ -186,6 +227,13 @@ function getCompanyReportedName() {
 
   document.getElementById("report-company").value = '';
   document.getElementById("report-company").value = place.name;
+
+  if (!place.geometry) {
+    // User entered the name of a Place that was not suggested and
+    // pressed the Enter key, or the Place Details request failed.
+    window.alert("No details available for input: '" + place.name + "'");
+    return;
+  }
 
   fillInAddress(place)
 }
