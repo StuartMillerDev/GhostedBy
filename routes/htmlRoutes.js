@@ -10,7 +10,7 @@ module.exports = function (app) {
 
     db.ghostedCompany.findAll({
 
-      attributes: ['company_name','company_address','company_city','company_state','company_zipcode'],
+      attributes: ['company_name'],
       include: [
         {
           model: db.ghostedCount,
@@ -19,7 +19,7 @@ module.exports = function (app) {
         },
       ],
       raw: true,
-      group: ['company_name','company_address','company_city','company_state','company_zipcode'],
+      group: ['company_name'],
       order: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'DESC']],
       limit: 10
 
