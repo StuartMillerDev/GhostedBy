@@ -26,10 +26,10 @@ $(document).ready(function(){
 =======
 
 // This wrapper initializes the modal
-$(document).ready(function () {
+$(document).ready(function(){
   $('.modal').modal({
     // Declaring a function to run before the modal opens
-    onOpenStart: function () {
+    onOpenStart: function() {
       var lookupCompany = {
         company_name: $("#lookup-company").val()
       };
@@ -39,6 +39,7 @@ $(document).ready(function () {
         url: "/api/lookup",
         data: lookupCompany
       })
+<<<<<<< HEAD
 <<<<<<< HEAD
       .then(function (data) {
         console.log(data);
@@ -80,6 +81,21 @@ $(document).ready(function () {
             $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
           }
         });
+=======
+      .then(function (data) {
+        var company = data.company_name;
+        $("#companyName").append(company)
+
+        // If there is no data for the ghosted count, the modal displays a generic message
+        if (!data.ghosted_count) {
+          $("#timesReported").append("This company has not been reported yet.")
+        
+        // If there is data on the company, the modal will display the number of times this comoany has been reported
+        } else {
+          $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
+        }
+      });
+>>>>>>> parent of b037a87... update
 
 >>>>>>> parent of c19c4e1... Merge branch 'master' into sequelize_query_updates
     },
@@ -112,13 +128,15 @@ $("#7day").on("click", get7DayReport);
 $("#report-searched").on("click", function() {
 =======
       console.log(data)
-
+    });
+}
 
       // Clear teetfield
       $("#lookup-company").val('');
       // Data is the company info
       console.log(data)
     });
+<<<<<<< HEAD
 }
 
 $(reportButton).on("click", function () {
