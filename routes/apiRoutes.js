@@ -5,13 +5,14 @@ var db = require("../models");
 
 module.exports = function (app) {
 
-
-app.get("/",function(req,res){
-  // Collect top 5 companies
-});
+  app.get("/api/lookup", function(req, res) {
+    
+  })
 
   // Look up company
   app.post("/api/lookup", function (req, res) {
+
+    res.json(req.body)
     db.ghostedCompany.findAll({
       where: {
         company_name: req.body.company_name
@@ -22,43 +23,42 @@ app.get("/",function(req,res){
       if (data.length > 0) {
 
         companyInfo = {
-          info: {
-            company_id: data[0].id,
-            company_name: data[0].company_name,
-            company_address: data[0].company_address,
-            company_city: data[0].company_city,
-            company_state: data[0].company_state,
-            company_zipcode: data[0].company_zipcode,
-          },
-          found: true
+          // id: data[0].company_name,
+          company_name: data[0].company_name,
+          company_address: data[0].company_address,
+          company_city: data[0].company_city,
+          company_state: data[0].company_state,
+          company_zipcode: data[0].company_zipcode,
         }
 
-        res.json(companyInfo);
+        res.send(companyInfo);
       }
 
       // No company in the database
       else {
+
+        res.send(
+          {
+            companyInfo: "Not in the database"
+          });
+
         companyInfo = {
-          info: {
-            company_name: req.body.company_name,
-            company_address: req.body.company_address,
-            company_city: req.body.company_city,
-            company_state: req.body.company_state,
-            company_zipcode: req.body.company_zipcode,
-          },
-          found: false
+          company_name: req.body.company_name,
+          company_address: req.body.street_number + " " + req.body.route,
+          company_city: req.body.locality,
+          company_state: req.body.administrative_area_level_1,
+          company_zipcode: req.body.postal_code
         }
-        res.json(companyInfo);
         // res.json(req.body)
         // res.send({
-      }
+          
         // });
+      }
     });
   });
 
   // Create a new example
   app.post("/api/report", function (req, res) {
-
 
     // Check for duplate company name
     db.ghostedCompany.findAll({
@@ -113,32 +113,13 @@ app.get("/",function(req,res){
                 companyInfo: "Company has been added.",
                 data: data
               });
-            // res.json({
-            //   data: data
-            
+            res.send(data);
           });
         });
       }
     });
   });
 
-  app.get("/api/ghostedCount/:id", function(req, res) {
-    db.ghostedCompany.findAll({
-      where: {
-        id: req.params.id
-      },
-      include:
-        {
-          model: db.ghostedCount,
-          attributes: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'count']],
-          duplicating: false,
-        }
-    })
-    .then(function(data) {
-      console.log(data)
-      res.json(data);
-    })
-  })
 
   // Load lifetime
   app.post("/api/lifetime", function (req, res) {
@@ -153,7 +134,7 @@ app.get("/",function(req,res){
           duplicating: false,
         },
       ],
-      // raw: true,
+      raw: true,
       group: ['company_name'],
       order: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'DESC']],
       limit: 10
@@ -161,7 +142,7 @@ app.get("/",function(req,res){
     }).then(function (data) {
       console.log(data)
 
-
+      // Render needs to be used here for handlebars
       res.json(data);
     });
   });
@@ -191,15 +172,15 @@ app.get("/",function(req,res){
             duplicating: false,
           },
       ],
-      // raw: true,
+      raw: true,
       group: ['company_name'],
       order: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'DESC']],
       limit: 10
 
     }).then(function (data) {
-
       console.log(data)
 
+      // Render needs to be used here for handlebars
       res.json(data);
     });
   });
@@ -224,15 +205,15 @@ app.get("/",function(req,res){
           duplicating: false,
         },
       ],
-      // raw: true,
+      raw: true,
       group: ['company_name'],
       order: [[sequelize.fn('sum', sequelize.col('ghosted_count')), 'DESC']],
       limit: 10
 
     }).then(function (data) {
-
       console.log(data)
 
+      // Render needs to be used here for handlebars
       res.json(data);
     });
   });

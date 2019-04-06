@@ -7,6 +7,7 @@ var lookupButton = $("#lookup-btn");
 
 // Contents of top five end up in here
 var div = $("#trending-report");
+<<<<<<< HEAD
 var company = $("#lookup-company").val()
 
 $(document).ready(function(){
@@ -22,11 +23,23 @@ $(document).ready(function(){
         $("#report-searched").hide();
       } else {
         $("#report-searched").show();
+=======
+
+// This wrapper initializes the modal
+$(document).ready(function () {
+  $('.modal').modal({
+    // Declaring a function to run before the modal opens
+    onOpenStart: function () {
+      var lookupCompany = {
+        company_name: $("#lookup-company").val()
+      };
+>>>>>>> parent of c19c4e1... Merge branch 'master' into sequelize_query_updates
       $.ajax({
         method: "POST",
         url: "/api/lookup",
-        data: companyResult
+        data: lookupCompany
       })
+<<<<<<< HEAD
       .then(function (data) {
         console.log(data);
       
@@ -53,65 +66,30 @@ $(document).ready(function(){
       });
       }
       
+=======
+        .then(function (data) {
+          var company = data.company_name;
+          $("#companyName").append(company)
+
+          // If there is no data for the ghosted count, the modal displays a generic message
+          if (!data.ghosted_count) {
+            $("#timesReported").append("This company has not been reported yet.")
+
+            // If there is data on the company, the modal will display the number of times this comoany has been reported
+          } else {
+            $("#timesReported").append("Ghosted " + data.ghosted_count + " people")
+          }
+        });
+
+>>>>>>> parent of c19c4e1... Merge branch 'master' into sequelize_query_updates
     },
     onCloseEnd: function() {
       $("#companyName").empty();
       $("#timesReported").empty();
       $("#lookup-company").val("");
-      companyResult = {};
     }
   });
-
-  getLifetimeReport()
 });
-
-lookupButton.click(function() {
-  console.log(company)
-})
-function getLifetimeReport() {
-  $.ajax({
-    method: "POST",
-    url: "/api/lifetime"
-  })
-  .then(function(data) {
-    $("#timeframe").text("Total reports")
-    displayReport(data);
-  })
-}
-
-function get30DayReport() {
-  $.ajax({
-    method: "POST",
-    url: "/api/last30days"
-  })
-  .then(function(data) {
-    $("#timeframe").text("Reports in the last 30 days")
-    displayReport(data);
-  })
-}
-
-function get7DayReport() {
-  $.ajax({
-    method: "POST",
-    url: "/api/last7days"
-  })
-  .then(function(data) {
-    $("#timeframe").text("Reports in the last 7 days")
-    displayReport(data);
-  })
-}
-
-function displayReport(report) {
-  $("#report-display").empty();
-  for (var i in report) {
-    var newCompany = $("<tr>");
-    var companyName = $("<td>").text(report[i].company_name);
-    var count = $("<td class='countCol'>").text(report[i].ghostedCounts[0].count)
-    newCompany.append(companyName);
-    newCompany.append(count);
-    $("#report-display").append(newCompany);
-  }
-}
 
 function reportCompany(company) {
   $.ajax({
@@ -122,6 +100,7 @@ function reportCompany(company) {
     .then(function (data) {
       // Clear textfield
       $("#report-company").val('');
+<<<<<<< HEAD
     });
 }
 
@@ -131,10 +110,21 @@ $("#30day").on("click", get30DayReport);
 $("#7day").on("click", get7DayReport);
    
 $("#report-searched").on("click", function() {
+=======
+      console.log(data)
+
+
+      // Clear teetfield
+      $("#lookup-company").val('');
+      // Data is the company info
+      console.log(data)
+    });
+}
+
+$(reportButton).on("click", function () {
+>>>>>>> parent of c19c4e1... Merge branch 'master' into sequelize_query_updates
   reportCompany(companyResult);
-  $("#report-searched").hide();
-  $("#timesReported").empty();
-  $("#timesReported").append("Company succesfully reported. Click close to continue searching.");
+  $("#report-company").val("");
 });
 
 var autocompleteReport;
@@ -156,33 +146,26 @@ function initAutocomplete() {
   console.log("initAutocomplete()")
 
   // Create the autocomplete object
-  // autocompleteReport = new google.maps.places.Autocomplete(
-  //   document.getElementById('report-company'), { types: ['establishment'] });
+  autocompleteReport = new google.maps.places.Autocomplete(
+    document.getElementById('report-company'), { types: ['establishment'] });
 
   autocompleteLookup = new google.maps.places.Autocomplete(
     document.getElementById('lookup-company'), { types: ['establishment'] });
 
   // Avoid paying for data that you don't need by restricting the set of
   // place fields that are returned to just the address components.
-  // autocompleteReport.setFields('address_components');
+  autocompleteReport.setFields('address_components');
   autocompleteLookup.setFields('address_components');
 
   // When the user selects an address from the drop-down, populate the
   // address fields in the form.
-  // autocompleteReport.addListener('place_changed', getCompanyReportedName);
+  autocompleteReport.addListener('place_changed', getCompanyReportedName);
   autocompleteLookup.addListener('place_changed', getCompanyLookupName);
 }
 
 function getCompanyReportedName() {
 
   var place = autocompleteReport.getPlace();
-
-  if (!place.geometry) {
-    // User entered the name of a Place that was not suggested and
-    // pressed the Enter key, or the Place Details request failed.
-    window.alert("No details available for input: '" + place.name + "'");
-    return;
-  }
 
   document.getElementById("report-company").value = '';
   document.getElementById("report-company").value = place.name;
