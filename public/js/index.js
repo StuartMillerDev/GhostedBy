@@ -141,6 +141,9 @@ $("#report-searched").on("click", function() {
 
 $(reportButton).on("click", function () {
 >>>>>>> parent of c19c4e1... Merge branch 'master' into sequelize_query_updates
+=======
+$(reportButton).on("click", function() {
+>>>>>>> parent of b037a87... update
   reportCompany(companyResult);
   $("#report-company").val("");
 });
